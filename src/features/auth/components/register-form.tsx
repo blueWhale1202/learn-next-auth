@@ -17,14 +17,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useLogin } from "../apis/use-login";
-import { LoginValues, loginSchema } from "../schemas/login";
+import { registerSchema, RegisterValues } from "../schemas/register";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 
-export const LoginForm = () => {
-    const form = useForm<LoginValues>({
-        resolver: zodResolver(loginSchema),
+export const RegisterForm = () => {
+    const form = useForm<RegisterValues>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
+            name: "John Doe",
             email: "test@example.us",
             password: "123456",
         },
@@ -35,7 +36,7 @@ export const LoginForm = () => {
 
     const { mutate, isPending } = useLogin();
 
-    const onSubmit = (values: LoginValues) => {
+    const onSubmit = (values: RegisterValues) => {
         mutate(values, {
             onError: (error) => {
                 console.log("🚀 ~ onSubmit ~ error:", error);
@@ -49,9 +50,9 @@ export const LoginForm = () => {
 
     return (
         <CardWrapper
-            headerLabel="Welcome back"
-            backButtonLabel="Don't have an account?"
-            backButtonHref="/register"
+            headerLabel="Create an account"
+            backButtonLabel="Already have an account?"
+            backButtonHref="/login"
             showSocial
         >
             <Form {...form}>
@@ -59,6 +60,19 @@ export const LoginForm = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6"
                 >
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="John Doe" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="email"
@@ -100,7 +114,7 @@ export const LoginForm = () => {
                         className="w-full"
                         disabled={isPending}
                     >
-                        Login
+                        Create an account
                     </Button>
                 </form>
             </Form>
