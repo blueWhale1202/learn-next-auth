@@ -15,6 +15,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLogin } from "../apis/login";
 import { LoginValues, loginSchema } from "../schemas/login";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
@@ -23,13 +24,15 @@ export const LoginForm = () => {
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: "",
-            password: "",
+            email: "test@example.us",
+            password: "123456",
         },
     });
 
+    const { mutate, isPending } = useLogin();
+
     const onSubmit = (values: LoginValues) => {
-        console.log("🚀 ~ onSubmit ~ values:", values);
+        mutate(values);
     };
 
     return (
@@ -80,7 +83,11 @@ export const LoginForm = () => {
                     />
                     <FormError message="Invalid" />
                     <FormSuccess message="Success" />
-                    <Button type="submit" className="w-full">
+                    <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isPending}
+                    >
                         Submit
                     </Button>
                 </form>
